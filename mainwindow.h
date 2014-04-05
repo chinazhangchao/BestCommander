@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QFileSystemModel>
+#include <QSortFilterProxyModel>
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +19,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QFileSystemModel leftModel;
+    QFileSystemModel rightModel;
+    QSortFilterProxyModel leftProxyModel;
+    QSortFilterProxyModel rightProxyModel;
 };
 
 #endif // MAINWINDOW_H
