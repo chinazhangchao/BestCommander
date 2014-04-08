@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QTableView>
+#include "filelistview.h"
 
 void initView(QFileSystemModel &model,
                           QSortFilterProxyModel &proxyModel,
-                          QTableView *view)
+                          FileListView *view)
 {
     model.setRootPath(QDir::currentPath());
     proxyModel.setSourceModel(&model);
@@ -15,8 +17,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    initView(leftModel, leftProxyModel, ui->leftView);
-    initView(rightModel, rightProxyModel, ui->rightView);
+    FileListView *leftView = new FileListView(this);
+    FileListView *rightView= new FileListView(this);
+
+    initView(leftModel, leftProxyModel, leftView);
+    initView(rightModel, rightProxyModel, rightView);
+    ui->leftTabWidget->clear();
+    ui->leftTabWidget->addTab(leftView, QDir::currentPath());
+    ui->rightTabWidget->clear();
+    ui->rightTabWidget->addTab(rightView, QDir::currentPath());
 }
 
 MainWindow::~MainWindow()
