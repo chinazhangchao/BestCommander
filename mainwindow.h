@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QFileSystemModel>
 #include <QSortFilterProxyModel>
 #include "filelistmodel.h"
 
@@ -20,8 +19,6 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    //QFileSystemModel leftModel;
-    //QFileSystemModel rightModel;
     FileListModel leftModel;
     FileListModel rightModel;
     QSortFilterProxyModel leftProxyModel;
