@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>
+#include "filelistmodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -19,8 +20,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QFileSystemModel leftModel;
-    QFileSystemModel rightModel;
+    //QFileSystemModel leftModel;
+    //QFileSystemModel rightModel;
+    FileListModel leftModel;
+    FileListModel rightModel;
     QSortFilterProxyModel leftProxyModel;
     QSortFilterProxyModel rightProxyModel;
 };

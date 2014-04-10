@@ -1,11 +1,13 @@
 #include "filelistview.h"
 #include <QHeaderView>
 
-FileListView::FileListView(QWidget *parent) :
-    QTableView(parent)
+FileListView::FileListView( QWidget *parent ) :
+    QTableView( parent )
 {
-    verticalHeader()->setVisible(false);
+    verticalHeader()->setVisible( false );
     resizeColumnsToContents();
-    setSortingEnabled(true);
-    setShowGrid(false);
+    setSortingEnabled( true );
+    setShowGrid( false );
+    setSelectionBehavior( QAbstractItemView::SelectRows );
+    setSelectionMode( QAbstractItemView::ExtendedSelection );
 }

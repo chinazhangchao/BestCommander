@@ -7,7 +7,7 @@ class FileListView : public QTableView
 {
     Q_OBJECT
 public:
-    explicit FileListView(QWidget *parent = 0);
+    explicit FileListView( QWidget *parent = 0 );
 
 signals:
 
