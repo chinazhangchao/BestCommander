@@ -25,11 +25,8 @@ void open(FileListView &v, const QModelIndex &index )
     if ( fileInfo.isDir() )
     {
         m->setPath( fileInfo.canonicalFilePath() );
-        //p->setSourceModel( m );
-        //p->sort( 0 );
-        //v.setModel( p );
         v.resizeColumnsToContents();
-        view.setCurrentIndex( QModelIndex( proxyModel.index( 0, 0 ) ) );
+        v.setCurrentIndex( QModelIndex( p->index( 0, 0 ) ) );
     }
     else
     {
