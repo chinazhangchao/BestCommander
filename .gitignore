@@ -31,4 +31,4 @@ Makefile*
 .DS_Store
 
 # git
-.orig
+*.orig
