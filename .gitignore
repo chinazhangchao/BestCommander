@@ -29,3 +29,6 @@ Makefile*
 
 # OSX
 .DS_Store
+
+# git
+.orig
