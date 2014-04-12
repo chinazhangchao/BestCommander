@@ -23,6 +23,8 @@ void FileListModel::setPath( const QString &path )
         QMessageBox::information( nullptr, tr( "info" ), tr( "Dir Not Exist!" ) );
         return;
     }
+    fileInfoHash.clear();
+    clear();
     QStringList columnLabels;
     columnLabels.push_back( tr( "Name" ) );
     columnLabels.push_back( tr( "Size" ) );
@@ -33,27 +35,40 @@ void FileListModel::setPath( const QString &path )
     int rowCount = 0;
     for ( const QFileInfo &entry : fileList )
     {
-        qDebug() << "entry.baseName:" << entry.baseName();
-        qDebug() << "entry.fileName:" << entry.fileName();
-        qDebug() << "entry.filePath:" << entry.filePath();
-        qDebug() << "entry.size:" << entry.size();
-        qDebug() << "entry.suffix:" << entry.suffix();
-        qDebug() << "entry.lastModified:" << entry.lastModified().toString();
+        //qDebug() << "entry.baseName:" << entry.baseName();
+        //qDebug() << "entry.fileName:" << entry.fileName();
+        //qDebug() << "entry.filePath:" << entry.filePath();
+        //qDebug() << "entry.absoluteFilePath:" << entry.absoluteFilePath();
+        //qDebug() << "entry.size:" << entry.size();
+        //qDebug() << "entry.suffix:" << entry.suffix();
+        //qDebug() << "entry.lastModified:" << entry.lastModified().toString();
         QString fileName = entry.fileName();
         if ( fileName == "." )
         {
             continue;
         }
         QStandardItem *c1 = new QStandardItem( entry.fileName() );
-        QStandardItem *c2 = new QStandardItem( entry.size() );
+        QStandardItem *c2 = new QStandardItem( QString::number( entry.size() ) );
+        c2->setFlags(Qt::ItemIsSelectable);
         QStandardItem *c3 = new QStandardItem( entry.suffix() );
+        c3->setFlags(Qt::ItemIsSelectable);
         QStandardItem *c4 = new QStandardItem( entry.lastModified().toString() );
+        c4->setFlags(Qt::ItemIsSelectable);
 
         setItem( rowCount, 0, c1 );
         setItem( rowCount, 1, c2 );
         setItem( rowCount, 2, c3 );
         setItem( rowCount, 3, c4 );
 
+        fileInfoHash.insert( rowCount, entry );
         ++rowCount;
     }
+}
+
+QFileInfo FileListModel::fileInfo( const QModelIndex &index )
+{
+    int rowIndex = index.row();
+    auto it = fileInfoHash.find( rowIndex );
+    Q_ASSERT( it != fileInfoHash.end() );
+    return it.value();
 }

@@ -11,8 +11,6 @@ public:
 
 signals:
 
-public slots:
-
 };
 
 #endif // FILELISTVIEW_H

@@ -17,10 +17,13 @@ CONFIG += c++11
 SOURCES += main.cpp\
         mainwindow.cpp \
     filelistview.cpp \
-    filelistmodel.cpp
+    filelistmodel.cpp \
+    filelistcontrol.cpp
 
 HEADERS  += mainwindow.h \
     filelistview.h \
-    filelistmodel.h
+    filelistmodel.h \
+    general.h \
+    filelistcontrol.h
 
 FORMS    += mainwindow.ui

@@ -10,12 +10,14 @@ class FileListModel : public QStandardItemModel
 public:
     explicit FileListModel( const QString &path = "", QObject *parent = 0 );
     void setPath( const QString &path );
+    QFileInfo fileInfo( const QModelIndex &index );
 
 signals:
 
 public slots:
 
 private:
+    QHash<int, QFileInfo> fileInfoHash;
     QDir dir;
 };
 

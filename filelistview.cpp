@@ -1,5 +1,7 @@
 #include "filelistview.h"
 #include <QHeaderView>
+#include "general.h"
+#include "filelistmodel.h"
 
 FileListView::FileListView( QWidget *parent ) :
     QTableView( parent )
@@ -10,4 +12,5 @@ FileListView::FileListView( QWidget *parent ) :
     setShowGrid( false );
     setSelectionBehavior( QAbstractItemView::SelectRows );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
+    setEditTriggers(QAbstractItemView::SelectedClicked);
 }
