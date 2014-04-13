@@ -8,10 +8,11 @@
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ),
     ui( new Ui::MainWindow ),
-    fileListControl(this)
+    fileListControl( this )
 {
     ui->setupUi( this );
-    fileListControl.init( ui->leftTabWidget, ui->rightTabWidget);
+
+    fileListControl.init( ui->leftTabWidget, ui->rightTabWidget );
     initAction();
 }
 
@@ -20,11 +21,17 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+#define ADD_ACTION_MAP(actName, shortCut, slot) \
+    QAction *actName = new QAction( this );\
+    actName->setShortcut( shortCut );\
+    addAction(actName);\
+    DEBUG_ASSERT( connect( actName, SIGNAL( triggered() ), &fileListControl, SLOT( slot() ) ) );
+
 void MainWindow::initAction()
 {
-    QAction *openAct = new QAction( this );
-    openAct->setShortcut( Qt::Key_Return );
-    openAct->setShortcutContext(Qt::ApplicationShortcut);
-    addAction(openAct);
-    DEBUG_ASSERT( connect( openAct, SIGNAL( triggered() ), &fileListControl, SLOT( openSlot() ) ) );
+    ADD_ACTION_MAP( openAct, Qt::Key_Return, openSlot )
+    ADD_ACTION_MAP( tabAct, Qt::Key_Tab, tabSlot )
+    ADD_ACTION_MAP( nextTabAct, Qt::CTRL| Qt::Key_Tab, nextTabSlot )
+    ADD_ACTION_MAP( prevTabAct, Qt::SHIFT|Qt::CTRL| Qt::Key_Tab, prevTabSlot )
+    ADD_ACTION_MAP( favoriteAct, Qt::CTRL| Qt::Key_D, favoriteSlot )
 }

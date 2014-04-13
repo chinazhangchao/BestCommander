@@ -95,6 +95,30 @@ void FileListControl::openSlot()
     }
 }
 
+void FileListControl::tabSlot()
+{
+    if (currentActiveTab == leftTabWidget)
+        currentActiveTab = rightTabWidget;
+    else
+        currentActiveTab = leftTabWidget;
+    currentActiveTab->currentWidget()->setFocus();
+}
+
+void FileListControl::nextTabSlot()
+{
+
+}
+
+void FileListControl::prevTabSlot()
+{
+
+}
+
+void FileListControl::favoriteSlot()
+{
+
+}
+
 void FileListControl::doubleClicked( const QModelIndex &index )
 {
     FileListView *v = qobject_cast<FileListView*>( sender() );

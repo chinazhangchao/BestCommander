@@ -18,6 +18,10 @@ signals:
 
 public slots:
     void openSlot();
+    void tabSlot();
+    void nextTabSlot();
+    void prevTabSlot();
+    void favoriteSlot();
 
 private slots:
     void doubleClicked(const QModelIndex &index);
