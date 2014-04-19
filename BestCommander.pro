@@ -18,12 +18,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     filelistview.cpp \
     filelistmodel.cpp \
-    filelistcontrol.cpp
+    setting.cpp
 
 HEADERS  += mainwindow.h \
     filelistview.h \
     filelistmodel.h \
     general.h \
-    filelistcontrol.h
+    setting.h \
+    singleton.hpp
 
 FORMS    += mainwindow.ui

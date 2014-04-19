@@ -14,3 +14,14 @@ FileListView::FileListView( QWidget *parent ) :
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setEditTriggers(QAbstractItemView::SelectedClicked);
 }
+
+void FileListView::setParentTab( QTabWidget *parentTab)
+{
+    Q_ASSERT(parentTab != nullptr);
+    parentTabWidget = parentTab;
+}
+
+QTabWidget *FileListView::parentTab()
+{
+    return parentTabWidget;
+}
