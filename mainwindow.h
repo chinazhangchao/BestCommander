@@ -21,18 +21,19 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow( QWidget *parent = 0 );
     ~MainWindow();
-    void init(QTabWidget *leftTabWidget, QTabWidget *rightTabWidget);
+    void init();
+    void activate();
+
 signals:
 
-public slots:
+private slots:
     void openSlot();
     void tabSlot();
     void nextTabSlot();
     void prevTabSlot();
     void favoriteSlot();
-
-private slots:
     void doubleClicked(const QModelIndex &index);
+    void tabBarClicked(int index);
 
 private:
     struct ViewData
@@ -43,18 +44,22 @@ private:
         QTabWidget *parentTab;
     };
 
-    void initViewList( const QList<QString> &files, QTabWidget &tabWidget,
-                       QList<QSharedPointer<ViewData> >& );
+    struct SideData
+    {
+        QTabWidget *tabWidget;
+        QList<QSharedPointer<ViewData> > fileList;
+        QLineEdit *addressText;
+    };
+
+    void initViewList( const QList<QString> &files,SideData &sideData, int currentIndex );
     void initAction();
+    void open( SideData &sideData,
+               FileListView &v, const QModelIndex &index );
 
     Ui::MainWindow *ui;
-    QTabWidget *currentActiveTab;
-    QTabWidget *leftTabWidget;
-    QTabWidget *rightTabWidget;
-    QList<QSharedPointer<ViewData> > leftList;
-    int leftCurrentIndex;
-    QList<QSharedPointer<ViewData> > rightList;
-    int rightCurrentIndex;
+    SideData leftSide;
+    SideData rightSide;
+    SideData *currentSide;
     QFileSystemWatcher fileSystemWatcher;
     Setting &setting;
 };

@@ -17,27 +17,21 @@ void initView( FileListModel &model,
     view.setCurrentIndex( QModelIndex( proxyModel.index( 0, 0 ) ) );
 }
 
-void open( QTabWidget *tabWidget, FileListView &v, const QModelIndex &index )
+void MainWindow::open( SideData &sideData, FileListView &v, const QModelIndex &index )
 {
     QSortFilterProxyModel *p = qobject_cast<QSortFilterProxyModel*>( v.model() );
     Q_ASSERT( p != 0 );
     FileListModel *m = qobject_cast<FileListModel*>( p->sourceModel() );
     Q_ASSERT( m != 0 );
     QFileInfo fileInfo = m->fileInfo( p->mapToSource( index ) );
-    //qDebug() << "canonicalFilePath:" << fileInfo.canonicalFilePath();
     if ( fileInfo.isDir() )
     {
         m->setPath( fileInfo.canonicalFilePath() );
         v.resizeColumnsToContents();
         v.setCurrentIndex( QModelIndex( p->index( 0, 0 ) ) );
-        //qDebug() << "basename:" << fileInfo.baseName();
-        //qDebug() << "filename:" << fileInfo.fileName();
-        qDebug() << "canonicalFilePath:" << fileInfo.canonicalFilePath();
-        qDebug() << "completeBaseName:" << fileInfo.completeBaseName();
-        //qDebug() << "absoluteDir().dirName():" << fileInfo.absoluteDir().dirName();
-        qDebug() << "dir().dirName():" << fileInfo.dir().dirName();
-        qDebug() << "absolutePath():" << fileInfo.absolutePath();
-        tabWidget->setTabText( tabWidget->currentIndex(), fileInfo.canonicalFilePath() );
+        sideData.tabWidget->setTabText( sideData.tabWidget->currentIndex(),
+                                        QFileInfo( fileInfo.canonicalFilePath() ).completeBaseName() );
+        sideData.addressText->setText( fileInfo.canonicalFilePath() );
     }
     else
     {
@@ -45,73 +39,74 @@ void open( QTabWidget *tabWidget, FileListView &v, const QModelIndex &index )
     }
 }
 
-void MainWindow::init( QTabWidget *l, QTabWidget *r )
+void MainWindow::init()
 {
-    Q_ASSERT( l != nullptr && r != nullptr );
-    leftTabWidget = l;
-    rightTabWidget = r;
-    leftTabWidget->clear();
-    rightTabWidget->clear();
+    leftSide.tabWidget = ui->leftTabWidget;
+    rightSide.tabWidget = ui->rightTabWidget;
+    leftSide.tabWidget->clear();
+    rightSide.tabWidget->clear();
+    DEBUG_ASSERT( connect( leftSide.tabWidget, SIGNAL( tabBarClicked( int ) ), this, SLOT( tabBarClicked( int ) ) ) );
+    DEBUG_ASSERT( connect( rightSide.tabWidget, SIGNAL( tabBarClicked( int ) ), this, SLOT( tabBarClicked( int ) ) ) );
+    leftSide.addressText = ui->leftAddressText;
+    rightSide.addressText = ui->rightAddressText;
     QList<QString> leftFiles;
     leftFiles = setting.getLeftTabs();
 
     QList<QString> rightFiles;
     rightFiles = setting.getRightTabs();
 
-    initViewList( leftFiles, *leftTabWidget , leftList );
-    initViewList( rightFiles, *rightTabWidget , rightList );
-    currentActiveTab = leftTabWidget;
-    currentActiveTab->setFocus();
+    initViewList( leftFiles, leftSide, 0 );
+    initViewList( rightFiles, rightSide, 0 );
+    currentSide = &leftSide;
 }
 
-void MainWindow::initViewList( const QList<QString> &files, QTabWidget &tabWidget,
-                                    QList<QSharedPointer<MainWindow::ViewData> > &list )
+void MainWindow::activate()
 {
+    currentSide->tabWidget->currentWidget()->setFocus();
+}
+
+void MainWindow::initViewList( const QList<QString> &files, SideData &sideData, int currentIndex )
+{
+    int i = 0;
     for ( auto item : files )
     {
         QSharedPointer<ViewData> vd( new ViewData );
-        vd->parentTab = &tabWidget;
+        vd->parentTab = sideData.tabWidget;
         initView( vd->m, vd->pm, vd->v, item );
         DEBUG_ASSERT( connect( &( vd->v ), SIGNAL( doubleClicked( const QModelIndex & ) ),
                                this, SLOT( doubleClicked( const QModelIndex & ) ) ) );
-        tabWidget.addTab( &( vd->v ), QFileInfo( item ).completeBaseName() );
-        vd->v.setParentTab( &tabWidget );
-        list.push_back( vd );
+        QFileInfo fileInfo( item );
+        sideData.tabWidget->addTab( &( vd->v ), fileInfo.completeBaseName() );
+        vd->v.setParentTab( sideData.tabWidget );
+        sideData.fileList.push_back( vd );
+        if ( i == currentIndex )
+        {
+            sideData.addressText->setText( fileInfo.canonicalFilePath() );
+        }
+        ++i;
     }
 }
 
 void MainWindow::openSlot()
 {
-    qDebug() << "open";
-    Q_ASSERT( currentActiveTab != nullptr );
-    int cur = currentActiveTab->currentIndex();
-    Q_ASSERT( cur != -1 && cur < currentActiveTab->count() );
-    if ( currentActiveTab == leftTabWidget )
-    {
-        open( currentActiveTab, leftList[cur]->v, leftList[cur]->v.currentIndex() );
-    }
-    else if ( currentActiveTab == rightTabWidget )
-    {
-        open( currentActiveTab, rightList[cur]->v, rightList[cur]->v.currentIndex() );
-    }
-    else
-    {
-        qDebug() << "current tab error";
-        Q_ASSERT(false);
-    }
+    Q_ASSERT( currentSide != nullptr );
+    int cur = currentSide->tabWidget->currentIndex();
+    Q_ASSERT( cur != -1 && cur < currentSide->tabWidget->count() );
+    open( *currentSide, currentSide->fileList[cur]->v, currentSide->fileList[cur]->v.currentIndex() );
+    activate();
 }
 
 void MainWindow::tabSlot()
 {
-    if ( currentActiveTab == leftTabWidget )
+    if ( currentSide == &leftSide )
     {
-        currentActiveTab = rightTabWidget;
+        currentSide = &rightSide;
     }
     else
     {
-        currentActiveTab = leftTabWidget;
+        currentSide = &leftSide;
     }
-    currentActiveTab->currentWidget()->setFocus();
+    activate();
 }
 
 void MainWindow::nextTabSlot()
@@ -133,23 +128,45 @@ void MainWindow::doubleClicked( const QModelIndex &index )
 {
     FileListView *v = qobject_cast<FileListView*>( sender() );
     Q_ASSERT( v != 0 );
-    currentActiveTab = v->parentTab();
+    QTabWidget *currentActiveTab = v->parentTab();
     Q_ASSERT( currentActiveTab != 0 );
-    currentActiveTab->setFocus();
-    open( currentActiveTab, *v, index );
+    if ( currentActiveTab == leftSide.tabWidget )
+    {
+        currentSide = &leftSide;
+    }
+    else if ( currentActiveTab == rightSide.tabWidget )
+    {
+        currentSide = &rightSide;
+    }
+    open( *currentSide, *v, index );
+    activate();
+}
+
+void MainWindow::tabBarClicked( int index )
+{
+    QTabWidget *tabWidget = qobject_cast<QTabWidget*>( sender() );
+    Q_ASSERT( tabWidget != 0 );
+    if ( tabWidget == leftSide.tabWidget )
+    {
+        currentSide = &leftSide;
+    }
+    else if ( tabWidget == rightSide.tabWidget )
+    {
+        currentSide = &rightSide;
+    }
+    currentSide->tabWidget->setCurrentIndex( index );
+    currentSide->addressText->setText( currentSide->fileList[index]->m.currentPath() );
+    activate();
 }
 
 MainWindow::MainWindow( QWidget *parent ) :
     QMainWindow( parent ),
     ui( new Ui::MainWindow ),
-    currentActiveTab( nullptr ),
-    leftCurrentIndex( -1 ),
-    rightCurrentIndex( -1 ),
     setting( Setting::instance() )
 {
     ui->setupUi( this );
 
-    init( ui->leftTabWidget, ui->rightTabWidget );
+    init( );
     initAction();
 }
 
@@ -168,7 +185,7 @@ void MainWindow::initAction()
 {
     ADD_ACTION_MAP( openAct, Qt::Key_Return, openSlot )
     ADD_ACTION_MAP( tabAct, Qt::Key_Tab, tabSlot )
-    ADD_ACTION_MAP( nextTabAct, Qt::CTRL| Qt::Key_Tab, nextTabSlot )
-    ADD_ACTION_MAP( prevTabAct, Qt::SHIFT|Qt::CTRL| Qt::Key_Tab, prevTabSlot )
-    ADD_ACTION_MAP( favoriteAct, Qt::CTRL| Qt::Key_D, favoriteSlot )
+    ADD_ACTION_MAP( nextTabAct, Qt::CTRL | Qt::Key_Tab, nextTabSlot )
+    ADD_ACTION_MAP( prevTabAct, Qt::SHIFT | Qt::CTRL | Qt::Key_Tab, prevTabSlot )
+    ADD_ACTION_MAP( favoriteAct, Qt::CTRL | Qt::Key_D, favoriteSlot )
 }

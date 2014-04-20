@@ -10,6 +10,7 @@ class FileListModel : public QStandardItemModel
 public:
     explicit FileListModel( const QString &path = "", QObject *parent = 0 );
     void setPath( const QString &path );
+    QString currentPath() const;
     QFileInfo fileInfo( const QModelIndex &index );
 
 signals:

@@ -35,13 +35,6 @@ void FileListModel::setPath( const QString &path )
     int rowCount = 0;
     for ( const QFileInfo &entry : fileList )
     {
-        //qDebug() << "entry.baseName:" << entry.baseName();
-        //qDebug() << "entry.fileName:" << entry.fileName();
-        //qDebug() << "entry.filePath:" << entry.filePath();
-        //qDebug() << "entry.absoluteFilePath:" << entry.absoluteFilePath();
-        //qDebug() << "entry.size:" << entry.size();
-        //qDebug() << "entry.suffix:" << entry.suffix();
-        //qDebug() << "entry.lastModified:" << entry.lastModified().toString();
         QString fileName = entry.fileName();
         if ( fileName == "." )
         {
@@ -63,6 +56,11 @@ void FileListModel::setPath( const QString &path )
         fileInfoHash.insert( rowCount, entry );
         ++rowCount;
     }
+}
+
+QString FileListModel::currentPath() const
+{
+    return dir.absolutePath();
 }
 
 QFileInfo FileListModel::fileInfo( const QModelIndex &index )
