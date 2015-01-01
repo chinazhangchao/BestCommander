@@ -111,17 +111,23 @@ void MainWindow::tabSlot()
 
 void MainWindow::nextTabSlot()
 {
-
+    qDebug() << "NextTabSLot";
+    int index = currentSide->tabWidget->currentIndex( );
+    index += 1;
+    index %= currentSide->tabWidget->count();
+    currentSide->tabWidget->setCurrentIndex( index );
+    currentSide->addressText->setText( currentSide->fileList[index]->m.currentPath() );
+    activate();
 }
 
 void MainWindow::prevTabSlot()
 {
-
+    qDebug() << "prevTabSlot";
 }
 
 void MainWindow::favoriteSlot()
 {
-
+    qDebug() << "favoriteSlot";
 }
 
 void MainWindow::doubleClicked( const QModelIndex &index )
@@ -185,7 +191,10 @@ void MainWindow::initAction()
 {
     ADD_ACTION_MAP( openAct, Qt::Key_Return, openSlot )
     ADD_ACTION_MAP( tabAct, Qt::Key_Tab, tabSlot )
-    ADD_ACTION_MAP( nextTabAct, Qt::CTRL | Qt::Key_Tab, nextTabSlot )
-    ADD_ACTION_MAP( prevTabAct, Qt::SHIFT | Qt::CTRL | Qt::Key_Tab, prevTabSlot )
-    ADD_ACTION_MAP( favoriteAct, Qt::CTRL | Qt::Key_D, favoriteSlot )
+    ADD_ACTION_MAP( nextTabAct, Qt::META | Qt::Key_Tab, nextTabSlot )
+    //参考https://bugreports.qt-project.org/browse/QTBUG-8596
+    nextTabAct->setText("下一项");
+    ui->menuView->addAction(nextTabAct);
+    ADD_ACTION_MAP( prevTabAct, Qt::SHIFT | Qt::META | Qt::Key_Tab, prevTabSlot )
+    ADD_ACTION_MAP( favoriteAct, Qt::META | Qt::Key_D, favoriteSlot )
 }
