@@ -32,6 +32,7 @@ private slots:
     void nextTabSlot();
     void prevTabSlot();
     void favoriteSlot();
+    void newTabSlot();
     void doubleClicked(const QModelIndex &index);
     void tabBarClicked(int index);
 

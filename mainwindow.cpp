@@ -123,11 +123,25 @@ void MainWindow::nextTabSlot()
 void MainWindow::prevTabSlot()
 {
     qDebug() << "prevTabSlot";
+    int index = currentSide->tabWidget->currentIndex( );
+    if (index == 0)
+        index = currentSide->tabWidget->count() - 1;
+    else
+        index -= 1;
+
+    currentSide->tabWidget->setCurrentIndex( index );
+    currentSide->addressText->setText( currentSide->fileList[index]->m.currentPath() );
+    activate();
 }
 
 void MainWindow::favoriteSlot()
 {
     qDebug() << "favoriteSlot";
+}
+
+void MainWindow::newTabSlot()
+{
+    qDebug() << "newTabSlot";
 }
 
 void MainWindow::doubleClicked( const QModelIndex &index )
@@ -196,5 +210,8 @@ void MainWindow::initAction()
     nextTabAct->setText("下一项");
     ui->menuView->addAction(nextTabAct);
     ADD_ACTION_MAP( prevTabAct, Qt::SHIFT | Qt::META | Qt::Key_Tab, prevTabSlot )
-    ADD_ACTION_MAP( favoriteAct, Qt::META | Qt::Key_D, favoriteSlot )
+    prevTabAct->setText("上一项");
+    ui->menuView->addAction(prevTabAct);
+    ADD_ACTION_MAP( favoriteAct, Qt::CTRL | Qt::Key_D, favoriteSlot )
+    ADD_ACTION_MAP( newTabAct, Qt::CTRL | Qt::Key_T, newTabSlot )
 }
