@@ -52,8 +52,14 @@ void MainWindow::init()
     QList<QString> leftFiles;
     leftFiles = setting.getLeftTabs();
 
+    const QString defaultPath = QDir::homePath();
+    if (leftFiles.isEmpty() )
+        leftFiles.append(defaultPath);
+
     QList<QString> rightFiles;
     rightFiles = setting.getRightTabs();
+    if (rightFiles.isEmpty() )
+        rightFiles.append(defaultPath);
 
     initViewList( leftFiles, leftSide, 0 );
     initViewList( rightFiles, rightSide, 0 );
