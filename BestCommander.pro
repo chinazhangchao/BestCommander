@@ -28,3 +28,6 @@ HEADERS  += mainwindow.h \
     singleton.hpp
 
 FORMS    += mainwindow.ui
+
+TRANSLATIONS = chinese.ts \
+               english.ts
