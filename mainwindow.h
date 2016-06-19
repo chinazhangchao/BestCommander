@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSortFilterProxyModel>
 #include <QFileSystemWatcher>
+#include <QTranslator>
 #include "filelistmodel.h"
 #include "filelistview.h"
 
@@ -35,6 +36,7 @@ private slots:
     void newTabSlot();
     void doubleClicked(const QModelIndex &index);
     void tabBarClicked(int index);
+    void changeLanguage();
 
 private:
     struct ViewData
@@ -63,6 +65,8 @@ private:
     SideData *currentSide;
     QFileSystemWatcher fileSystemWatcher;
     Setting &setting;
+    QTranslator *m_pTranslator;
+    bool m_bChinese;
 };
 
 #endif // MAINWINDOW_H

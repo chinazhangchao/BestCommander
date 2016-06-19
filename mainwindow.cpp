@@ -6,6 +6,57 @@
 #include <QDebug>
 #include "setting.h"
 
+MainWindow::MainWindow( QWidget *parent ) :
+    QMainWindow( parent ),
+    ui( new Ui::MainWindow ),
+    setting( Setting::instance() )
+{
+    ui->setupUi( this );
+    m_pTranslator = new QTranslator(this);
+    //    connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(changeLanguage()));
+    //    changeLanguage();
+
+    init( );
+    initAction();
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::changeLanguage()
+{
+    QString qmName = m_bChinese ? "chinese.qm" : "english.qm";
+    m_bChinese = !m_bChinese;
+    if (m_pTranslator->load(qmName, QApplication::applicationDirPath()))
+    {
+        qApp->installTranslator(m_pTranslator);
+        ui->retranslateUi(this);
+    }
+}
+
+#define ADD_ACTION_MAP(actName, shortCut, slot) \
+    QAction *actName = new QAction( this );\
+    actName->setShortcut( shortCut );\
+    addAction(actName);\
+    DEBUG_ASSERT( connect( actName, SIGNAL( triggered() ), this, SLOT( slot() ) ) );
+
+void MainWindow::initAction()
+{
+    ADD_ACTION_MAP( openAct, Qt::Key_Return, openSlot )
+            ADD_ACTION_MAP( tabAct, Qt::Key_Tab, tabSlot )
+            ADD_ACTION_MAP( nextTabAct, Qt::META | Qt::Key_Tab, nextTabSlot )
+            //参考https://bugreports.qt-project.org/browse/QTBUG-8596
+            nextTabAct->setText("下一项");
+    ui->menuView->addAction(nextTabAct);
+    ADD_ACTION_MAP( prevTabAct, Qt::SHIFT | Qt::META | Qt::Key_Tab, prevTabSlot )
+            prevTabAct->setText("上一项");
+    ui->menuView->addAction(prevTabAct);
+    ADD_ACTION_MAP( favoriteAct, Qt::CTRL | Qt::Key_D, favoriteSlot )
+            ADD_ACTION_MAP( newTabAct, Qt::CTRL | Qt::Key_T, newTabSlot )
+}
+
 void initView( FileListModel &model,
                QSortFilterProxyModel &proxyModel,
                FileListView &view, const QString &path )
@@ -183,41 +234,4 @@ void MainWindow::tabBarClicked( int index )
     currentSide->tabWidget->setCurrentIndex( index );
     currentSide->addressText->setText( currentSide->fileList[index]->m.currentPath() );
     activate();
-}
-
-MainWindow::MainWindow( QWidget *parent ) :
-    QMainWindow( parent ),
-    ui( new Ui::MainWindow ),
-    setting( Setting::instance() )
-{
-    ui->setupUi( this );
-
-    init( );
-    initAction();
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-
-#define ADD_ACTION_MAP(actName, shortCut, slot) \
-    QAction *actName = new QAction( this );\
-    actName->setShortcut( shortCut );\
-    addAction(actName);\
-    DEBUG_ASSERT( connect( actName, SIGNAL( triggered() ), this, SLOT( slot() ) ) );
-
-void MainWindow::initAction()
-{
-    ADD_ACTION_MAP( openAct, Qt::Key_Return, openSlot )
-    ADD_ACTION_MAP( tabAct, Qt::Key_Tab, tabSlot )
-    ADD_ACTION_MAP( nextTabAct, Qt::META | Qt::Key_Tab, nextTabSlot )
-    //参考https://bugreports.qt-project.org/browse/QTBUG-8596
-    nextTabAct->setText("下一项");
-    ui->menuView->addAction(nextTabAct);
-    ADD_ACTION_MAP( prevTabAct, Qt::SHIFT | Qt::META | Qt::Key_Tab, prevTabSlot )
-    prevTabAct->setText("上一项");
-    ui->menuView->addAction(prevTabAct);
-    ADD_ACTION_MAP( favoriteAct, Qt::CTRL | Qt::Key_D, favoriteSlot )
-    ADD_ACTION_MAP( newTabAct, Qt::CTRL | Qt::Key_T, newTabSlot )
 }
