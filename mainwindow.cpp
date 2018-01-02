@@ -45,16 +45,16 @@ void MainWindow::changeLanguage()
 void MainWindow::initAction()
 {
     ADD_ACTION_MAP( openAct, Qt::Key_Return, openSlot )
-            ADD_ACTION_MAP( tabAct, Qt::Key_Tab, tabSlot )
-            ADD_ACTION_MAP( nextTabAct, Qt::META | Qt::Key_Tab, nextTabSlot )
-            //参考https://bugreports.qt-project.org/browse/QTBUG-8596
-            nextTabAct->setText("下一项");
+    ADD_ACTION_MAP( tabAct, Qt::Key_Tab, tabSlot )
+    ADD_ACTION_MAP( nextTabAct, Qt::META | Qt::Key_Tab, nextTabSlot )
+    //参考https://bugreports.qt-project.org/browse/QTBUG-8596
+    nextTabAct->setText("下一项");
     ui->menuView->addAction(nextTabAct);
     ADD_ACTION_MAP( prevTabAct, Qt::SHIFT | Qt::META | Qt::Key_Tab, prevTabSlot )
-            prevTabAct->setText("上一项");
+    prevTabAct->setText("上一项");
     ui->menuView->addAction(prevTabAct);
     ADD_ACTION_MAP( favoriteAct, Qt::CTRL | Qt::Key_D, favoriteSlot )
-            ADD_ACTION_MAP( newTabAct, Qt::CTRL | Qt::Key_T, newTabSlot )
+    ADD_ACTION_MAP( newTabAct, Qt::CTRL | Qt::Key_T, newTabSlot )
 }
 
 void initView( FileListModel &model,
