@@ -20,7 +20,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow( QWidget *parent = 0 );
+    explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void init();
     void activate();
@@ -54,10 +54,10 @@ private:
         QLineEdit *addressText;
     };
 
-    void initViewList( const QList<QString> &files,SideData &sideData, int currentIndex );
+    void initViewList(const QList<QString> &files, SideData &sideData, int currentIndex);
     void initAction();
-    void open( SideData &sideData,
-               FileListView &v, const QModelIndex &index );
+    void open(SideData &sideData,
+              FileListView &v, const QModelIndex &index);
 
     Ui::MainWindow *ui;
     SideData leftSide;

@@ -9,14 +9,14 @@ class Setting : public QObject, public Singleton<Setting>
 {
     Q_OBJECT
 protected:
-    explicit Setting( QObject *parent = 0 );
+    explicit Setting(QObject *parent = 0);
 
     friend class Singleton<Setting>;
 
 public:
     QList<QString> getFavorites() const;
-    void removeFavorites( const QString &path );
-    void addFavorites( const QString &path );
+    void removeFavorites(const QString &path);
+    void addFavorites(const QString &path);
     QList<QString> getLeftTabs() const;
     QList<QString> getRightTabs() const;
 

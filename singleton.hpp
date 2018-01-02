@@ -21,7 +21,7 @@ public:
     static T &instance()
     {
         static T t;
-        use( i );
+        use(i);
         return t;
     }
 
@@ -30,10 +30,10 @@ protected:
     virtual ~Singleton() {}
 
 private:
-    Singleton( const Singleton& );
-    Singleton& operator = ( const Singleton& );
+    Singleton(const Singleton&);
+    Singleton& operator = (const Singleton&);
     static T & i;
-    static void use( T const & ) {}
+    static void use(T const &) {}
 };
 
 template<class T>

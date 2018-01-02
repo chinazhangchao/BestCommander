@@ -8,10 +8,10 @@ class FileListModel : public QStandardItemModel
 {
     Q_OBJECT
 public:
-    explicit FileListModel( const QString &path = "", QObject *parent = 0 );
-    void setPath( const QString &path );
+    explicit FileListModel(const QString &path = "", QObject *parent = 0);
+    void setPath(const QString &path);
     QString currentPath() const;
-    QFileInfo fileInfo( const QModelIndex &index );
+    QFileInfo fileInfo(const QModelIndex &index);
 
 signals:
 
